@@ -8,9 +8,7 @@ Built because I wanted to know exactly when to point my camera at the sky.
 
 ## Preview
 
-```md
 ![Dashboard](./screenshots/dashboard.png)
-```
 
 ---
 
