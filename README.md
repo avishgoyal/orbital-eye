@@ -8,14 +8,6 @@ Built because I wanted to know exactly when to point my camera at the sky.
 
 ## Preview
 
-> **Add screenshots or GIFs here before submitting to Hack Club Stardance.**
->
-> Recommended:
->
-> * Dashboard screenshot
-> * 3D globe screenshot
-> * GIF showing live orbit animation
-
 ```md
 ![Dashboard](./screenshots/dashboard.png)
 ```
