@@ -1,0 +1,229 @@
+/* --- GLOBAL DESIGN BASE SYSTEM --- */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #08070a;
+    color: #e2e8f0;
+    font-family: 'Courier New', Courier, monospace; /* Clean tech terminal aesthetic */
+    overflow: hidden;
+}
+
+/* 🌍 Globe Container takes full display footprint */
+#globe-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* 🏢 HUD Glass Panel Architecture */
+.hud-panel {
+    position: absolute;
+    z-index: 10;
+    background: rgba(11, 17, 32, 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(6, 182, 212, 0.2); /* Deep space cyan accent tint */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    transition: border-color 0.3s ease;
+}
+
+.hud-panel:hover {
+    border-color: rgba(6, 182, 212, 0.4);
+}
+
+.hud-divider {
+    border: 0;
+    border-top: 1px solid rgba(6, 182, 212, 0.15);
+    margin: 15px 0;
+}
+
+/* 📐 ABSOLUTE STRUCTURAL POSITIONS */
+
+/* TOP LEFT HUD */
+#left-hud {
+    top: 25px;
+    left: 25px;
+    width: 340px;
+}
+
+.brand-title {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+}
+
+.panel-subtitle {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 4px;
+    letter-spacing: 1px;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    color: #06b6d4;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+#countdown {
+    font-size: 2.4rem;
+    font-weight: bold;
+    color: #22d3ee; /* Electric Neon Cyan */
+    text-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+    margin-top: 5px;
+}
+
+#pass-details p {
+    margin: 8px 0;
+    font-size: 0.85rem;
+    color: #cbd5e1;
+}
+
+#pass-details strong {
+    color: #94a3b8;
+}
+
+/* RIGHT SIDE HUD (Table Display) */
+#right-hud {
+    top: 25px;
+    right: 25px;
+    width: 440px;
+    bottom: 125px; /* Fits elegantly right above selector box */
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-heading {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    letter-spacing: 1.5px;
+    color: #22d3ee;
+    border-bottom: 1px solid rgba(34, 211, 238, 0.2);
+    padding-bottom: 8px;
+}
+
+.table-scroll-wrapper {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Scrollbar customizations */
+.table-scroll-wrapper::-webkit-scrollbar {
+    width: 4px;
+}
+.table-scroll-wrapper::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+.table-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(6, 182, 212, 0.3);
+    border-radius: 2px;
+}
+
+/* 📊 DATA TABLE DESIGN */
+.pass-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    text-align: left;
+}
+
+.pass-table th {
+    color: #94a3b8;
+    padding: 10px 6px;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pass-table td {
+    padding: 12px 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: #e2e8f0;
+}
+
+.pass-table tr:hover td {
+    background: rgba(6, 182, 212, 0.05);
+    color: #ffffff;
+}
+
+.accent-text {
+    color: #38bdf8;
+    font-weight: bold;
+}
+
+/* Badges for visibility indices */
+.badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+.good-vis {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+}
+.poor-vis {
+    background: rgba(148, 163, 184, 0.15);
+    color: #cbd5e1;
+}
+
+/* BOTTOM RIGHT HUD (Asset Selector Dropdown Container) */
+#bottom-right-hud {
+    bottom: 25px;
+    right: 25px;
+    width: 440px;
+}
+
+.select-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    letter-spacing: 1px;
+}
+
+#satellite-select {
+    width: 100%;
+    background: #090e1a;
+    color: #22d3ee;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    padding: 12px;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#satellite-select:focus, #satellite-select:hover {
+    border-color: #22d3ee;
+    box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+}
+
+#satellite-select optgroup {
+    background: #0b1120;
+    color: #94a3b8;
+    font-style: normal;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#satellite-select option {
+    background: #090e1a;
+    color: #e2e8f0;
+    padding: 6px;
+}

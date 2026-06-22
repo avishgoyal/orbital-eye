@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbital Eye | ISS Tracker</title>
+    <script src="https://unpkg.com/globe.gl@2.27.2/dist/globe.gl.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body data-current-lat="{{ current_lat }}" data-current-lon="{{ current_lon }}">
+
+    <div id="globe-container"></div>
+
+    <div id="left-hud" class="hud-panel">
+        <h1 class="brand-title">Orbital Eye</h1>
+        <div class="panel-subtitle">ACTIVE ASSET: {{ current_sat if current_sat else "ISS (ZARYA)" }}</div>
+        
+        <hr class="hud-divider">
+        
+        <div class="hero-countdown">
+            {% if next_pass %}
+                <div class="metric-label">NEXT PASS IN:</div>
+                <div id="countdown" date-time="{{ next_pass_time }}">--:--:--</div>
+                
+                <div id="pass-details" style="margin-top: 15px;">
+                    <p><strong>Visibility:</strong> <span id="vis-val">{{ passes[0].visibility if passes else 'N/A' }}</span></p>
+                    <p><strong>Max Elevation:</strong> <span id="alt-val">{{ passes[0].max_alt if passes else '0' }}°</span></p>
+                    <p><strong>Rise Vector:</strong> <span id="rise-val">{{ passes[0].rise if passes else 'N/A' }}</span></p>
+                </div>
+            {% else %}
+                <p class="no-passes">No upcoming passes found for current coordinates.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="right-hud" class="hud-panel">
+        <h3 class="panel-heading">UPCOMING WINDOWS</h3>
+        <div class="table-scroll-wrapper">
+            <table class="pass-table">
+                <thead>
+                    <tr>
+                        <th>Rise</th>
+                        <th>Peak</th>
+                        <th>Max Alt</th>
+                        <th>Set</th>
+                        <th>Visibility</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pass in passes %}
+                    <tr>
+                        <td>{{ pass.rise }}</td>
+                        <td>{{ pass.peak }}</td>
+                        <td class="accent-text">{{ pass.max_alt }}°</td>
+                        <td>{{ pass.set }}</td>
+                        <td>
+                            <span class="badge {{ 'good-vis' if 'Visible' in pass.visibility or 'Good' in pass.visibility else 'poor-vis' }}">
+                                {{ pass.visibility }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="bottom-right-hud" class="hud-panel">
+        <div class="satellite-selector-container">
+            <label for="satellite-select" class="select-label">SELECT TRACKING TARGET</label>
+            <select id="satellite-select" onchange="switchSatellite(this.value)">
+                <optgroup label="Space Stations">
+                    <option value="ISS (ZARYA)" {% if current_sat == "ISS (ZARYA)" %}selected{% endif %}>International Space Station (ISS)</option>
+                    <option value="CSS (TIANHE)" {% if current_sat == "CSS (TIANHE)" %}selected{% endif %}>Tiangong Core Module (Tianhe)</option>
+                    <option value="CSS (WENTIAN)" {% if current_sat == "CSS (WENTIAN)" %}selected{% endif %}>Tiangong Lab Module (Wentian)</option>
+                    <option value="CSS (MENGTIAN)" {% if current_sat == "CSS (MENGTIAN)" %}selected{% endif %}>Tiangong Lab Module (Mengtian)</option>
+                </optgroup>
+
+                <optgroup label="Docked / Visiting Spacecraft">
+                    <option value="CREW DRAGON 12" {% if current_sat == "CREW DRAGON 12" %}selected{% endif %}>Crew Dragon 12</option>
+                    <option value="SOYUZ-MS 28" {% if current_sat == "SOYUZ-MS 28" %}selected{% endif %}>Soyuz MS-28</option>
+                    <option value="SHENZHOU-23 (SZ-23)" {% if current_sat == "SHENZHOU-23 (SZ-23)" %}selected{% endif %}>Shenzhou-23 (SZ-23)</option>
+                    <option value="PROGRESS-MS 33" {% if current_sat == "PROGRESS-MS 33" %}selected{% endif %}>Progress MS-33</option>
+                    <option value="PROGRESS-MS 34" {% if current_sat == "PROGRESS-MS 34" %}selected{% endif %}>Progress MS-34</option>
+                    <option value="CYGNUS NG-24" {% if current_sat == "CYGNUS NG-24" %}selected{% endif %}>Cygnus NG-24</option>
+                    <option value="TIANZHOU-10" {% if current_sat == "TIANZHOU-10" %}selected{% endif %}>Tianzhou-10</option>
+                    <option value="POISK" {% if current_sat == "POISK" %}selected{% endif %}>Poisk Mini-Research Module</option>
+                    <option value="ISS (NAUKA)" {% if current_sat == "ISS (NAUKA)" %}selected{% endif %}>Nauka Multipurpose Lab</option>
+                </optgroup>
+
+                <optgroup label="Deployed Cubesats & Modules">
+                    <option value="SZ-21 MODULE" {% if current_sat == "SZ-21 MODULE" %}selected{% endif %}>SZ-21 Module</option>
+                    <option value="KNACKSAT-2" {% if current_sat == "KNACKSAT-2" %}selected{% endif %}>KNACKSAT-2</option>
+                    <option value="CORAL" {% if current_sat == "CORAL" %}selected{% endif %}>CORAL</option>
+                    <option value="GXIBA-1" {% if current_sat == "GXIBA-1" %}selected{% endif %}>GXIBA-1</option>
+                    <option value="UITMSAT-2" {% if current_sat == "UITMSAT-2" %}selected{% endif %}>UITMSAT-2</option>
+                    <option value="LEOPARD" {% if current_sat == "LEOPARD" %}selected{% endif %}>LEOPARD</option>
+                    <option value="HMU-SAT2" {% if current_sat == "HMU-SAT2" %}selected{% endif %}>HMU-SAT2</option>
+                    <option value="DUPLEX" {% if current_sat == "DUPLEX" %}selected{% endif %}>DUPLEX</option>
+                </optgroup>
+
+                <optgroup label="Tracked Debris & Equipment">
+                    <option value="FREGAT DEB" {% if current_sat == "FREGAT DEB" %}selected{% endif %}>Fregat Upper Stage Debris</option>
+                    <option value="HRC MONOBLOCK CAMERA" {% if current_sat == "HRC MONOBLOCK CAMERA" %}selected{% endif %}>HRC Monoblock Camera (Equipment)</option>
+                    <option value="ISS OBJECT XY" {% if current_sat == "ISS OBJECT XY" %}selected{% endif %}>ISS Object XY</option>
+                </optgroup>
+            </select>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
