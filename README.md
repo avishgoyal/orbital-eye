@@ -17,7 +17,7 @@ Built because I wanted to know exactly when to point my camera at the sky.
 > * GIF showing live orbit animation
 
 ```md
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](./screenshots/dashboard.png)
 ```
 
 ---
