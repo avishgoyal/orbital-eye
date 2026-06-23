@@ -10,7 +10,7 @@
 <body data-current-lat="{{ current_lat }}" data-current-lon="{{ current_lon }}">
 
     <div id="globe-container"></div>
-
+    <canvas id="overlay-canvas" style="position:absolute;top:0;left:0;pointer-events:none;z-index:10;"></canvas>
     <div id="left-hud" class="hud-panel">
         <h1 class="brand-title">Orbital Eye</h1>
         <div class="panel-subtitle">ACTIVE ASSET: {{ current_sat if current_sat else "ISS (ZARYA)" }}</div>

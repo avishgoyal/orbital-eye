@@ -7,6 +7,36 @@ function getUserLocation() {
     }
 }
 
+function drawOverlay(nodes) {
+    const canvas = document.getElementById('overlay-canvas');
+    const container = document.getElementById('globe-container');
+    canvas.width = container.offsetWidth;
+    canvas.height = container.offsetHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const camera = myGlobe.camera();
+    const renderer = myGlobe.renderer();
+
+    nodes.forEach(node => {
+        const pos3d = myGlobe.getCoords(node.lat, node.lng, node.alt);
+        if (!pos3d) return;
+
+        const vec = new (scene.children[0].position.constructor)(pos3d.x, pos3d.y, pos3d.z);
+        vec.project(camera);
+
+        const x = (vec.x * 0.5 + 0.5) * canvas.width;
+        const y = (-vec.y * 0.5 + 0.5) * canvas.height;
+
+        if (vec.z > 1) return; // behind globe
+
+        ctx.beginPath();
+        ctx.arc(x, y, node.isSatellite ? 8 : 5, 0, Math.PI * 2);
+        ctx.fillStyle = node.isSatellite ? '#f43f5e' : '#4CD964';
+        ctx.fill();
+    });
+}
+
 function sendLocationToServer(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
@@ -83,7 +113,7 @@ async function fetchActiveOrbitPath() {
 }
 
 
-// --- 🔴 SATELLITE + USER DOT ANIMATION LOOP ---
+// --- 🔴 SATELLITE + USER RING ANIMATION LOOP ---
 function animateSatelliteNode() {
     if (!myGlobe) {
         requestAnimationFrame(animateSatelliteNode);
@@ -132,7 +162,7 @@ function animateSatelliteNode() {
         }
     }
 
-    // 2. USER GROUND STATION DOT
+    // 2. USER GROUND STATION
     if (userLat !== null && !isNaN(userLat) && userLng !== null && !isNaN(userLng)) {
         activeTrackingNodes.push({
             lat: userLat,
@@ -142,8 +172,8 @@ function animateSatelliteNode() {
         });
     }
 
-    // 3. PUSH TO GLOBE
-    myGlobe.customLayerData(activeTrackingNodes);
+    // 3. PUSH TO GLOBE AS RINGS
+    drawOverlay(activeTrackingNodes);
 
     requestAnimationFrame(animateSatelliteNode);
 }
@@ -224,7 +254,6 @@ window.onload = function() {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-    const THREE = window.__THREE__;
     const globeElement = document.getElementById('globe-container');
 
     const rawLat = document.body.getAttribute('data-current-lat');
@@ -236,13 +265,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (globeElement) {
         myGlobe = Globe()(globeElement)
-            .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-day.jpg')
+            .globeImageUrl('https://raw.githubusercontent.com/turban/webgl-earth/master/images/2_no_clouds_4k.jpg')
             .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
             .showAtmosphere(true)
             .atmosphereColor('#06b6d4')
             .atmosphereAltitude(0.15);
 
-        // Orbit path setup
+        // Extract THREE classes from globe.gl's own scene
+        const _scene = myGlobe.scene();
+        const _child = _scene.children[0];
+        const MeshClass = _child.constructor;
+        const GeometryClass = _child.geometry.constructor;
+        const MaterialClass = _child.material.constructor;
+
+        // Orbit path
         myGlobe.pathPoints(d => d.coords);
         myGlobe.pathPointLat(p => p.lat);
         myGlobe.pathPointLng(p => p.lng !== undefined ? p.lng : p.lon);
@@ -250,13 +286,13 @@ document.addEventListener("DOMContentLoaded", () => {
         myGlobe.pathColor(() => '#06b6d4');
         myGlobe.pathStroke(1.8);
 
-        // Custom 3D sphere objects using globe.gl's internal THREE
+        // Custom spheres using extracted classes
         myGlobe.customThreeObject(d => {
             const color = d.isSatellite ? '#f43f5e' : '#4CD964';
             const size = d.isSatellite ? 0.8 : 0.4;
-            return new THREE.Mesh(
-                new THREE.SphereGeometry(size, 16, 16),
-                new THREE.MeshBasicMaterial({ color })
+            return new MeshClass(
+                new GeometryClass(size, 16, 16),
+                new MaterialClass({ color })
             );
         });
 

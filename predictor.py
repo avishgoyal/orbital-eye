@@ -3,6 +3,7 @@ import os
 from skyfield.api import load, EarthSatellite, wgs84
 from datetime import timedelta
 import datetime
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def degrees_to_cardinal(degrees):
         cardinals = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
@@ -166,22 +167,21 @@ def calculate_visibility(satellite_name, lat, lon, alt, time_obj, max_alt):
     sun_altaz = (eph['earth'] + location).at(time_obj).observe(eph['sun']).apparent().altaz()
     sun_alt = sun_altaz[0].degrees
 
-    # --- CRITERIA VISIBILITY MATRIX ---
-    if cloud_cover is not None and cloud_cover > 75:
-        return f"POOR ({cloud_cover}% Clouds)"
+    if sun_alt > -6:
+        return "INVISIBLE (Daylight)"
+
+    if not is_satellite_sunlit:
+        return "INVISIBLE (Eclipsed)"
 
     if max_alt < 20:
         return "FAIR (Too Low)"
 
-    if sun_alt > -6:
-        return "INVISIBLE (Daylight)"
-        
-    if not is_satellite_sunlit:  # FIXED: Variable updated to match definition name
-        return "INVISIBLE (Eclipsed)"
-        
+    if cloud_cover is not None and cloud_cover > 75:
+        return f"POOR ({cloud_cover}% Clouds)"
+
     if cloud_cover is not None and cloud_cover < 20 and max_alt > 45:
         return "EXCELLENT"
-        
+
     return "GOOD"
 
     
@@ -207,7 +207,7 @@ def calculate_future_orbit_path(satellite_object, total_minutes=276, step_second
 
 def get_satellite_object(satellite_name):
     """Loads a specific satellite from the local cache file and returns a Skyfield object."""
-    local_cache = "stations.txt"
+    local_cache = os.path.join(BASE_DIR, "stations.txt")
     ts = load.timescale()
     
     if os.path.exists(local_cache):
