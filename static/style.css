@@ -1,4 +1,6 @@
-/* --- GLOBAL DESIGN BASE SYSTEM --- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
 body, html {
     margin: 0;
     padding: 0;
@@ -6,31 +8,29 @@ body, html {
     height: 100%;
     background-color: #08070a;
     color: #e2e8f0;
-    font-family: 'Courier New', Courier, monospace; /* Clean tech terminal aesthetic */
+    font-family: 'Courier New', Courier, monospace;
     overflow: hidden;
 }
 
-/* 🌍 Globe Container takes full display footprint */
+
 #globe-container {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     z-index: 1;
 }
 
-/* 🏢 HUD Glass Panel Architecture */
+
 .hud-panel {
     position: absolute;
     z-index: 10;
     background: rgba(11, 17, 32, 0.82);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(6, 182, 212, 0.2); /* Deep space cyan accent tint */
+    border: 1px solid rgba(6, 182, 212, 0.2);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
     transition: border-color 0.3s ease;
 }
 
@@ -44,14 +44,101 @@ body, html {
     margin: 15px 0;
 }
 
-/* 📐 ABSOLUTE STRUCTURAL POSITIONS */
 
-/* TOP LEFT HUD */
-#left-hud {
-    top: 25px;
-    left: 25px;
-    width: 340px;
+@media (min-width: 768px) {
+    #left-hud {
+        top: 25px; left: 25px;
+        width: 340px;
+    }
+
+    #right-hud {
+        top: 25px; right: 25px;
+        width: 440px;
+        bottom: 125px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #bottom-right-hud {
+        bottom: 25px; right: 25px;
+        width: 440px;
+    }
+
+    /* TLE injector: bottom-left on desktop */
+    #tle-injector-card {
+        bottom: 25px; left: 25px;
+        width: 320px;
+        border-color: rgba(0, 255, 120, 0.2);
+        box-shadow: 0 0 20px rgba(0, 255, 120, 0.05);
+    }
 }
+
+
+@media (max-width: 767px) {
+    /* Globe sits in top 50% */
+    #globe-container {
+        height: 50%;
+        position: absolute;
+        top: 0; left: 0; right: 0;
+    }
+
+    /* Scrollable strip below globe */
+    #mobile-hud-strip {
+        position: absolute;
+        top: 50%;
+        bottom: 0; left: 0; right: 0;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        z-index: 10;
+        background: rgba(8, 7, 10, 0.97);
+        border-top: 1px solid rgba(6, 182, 212, 0.35);
+    }
+
+    /* All panels become full-width stacked blocks */
+    .hud-panel {
+        position: relative !important;  /* override absolute positioning */
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        width: 100% !important;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        border-bottom: 1px solid rgba(6, 182, 212, 0.12);
+        padding: 16px;
+        box-shadow: none;
+    }
+
+    /* TLE injector: on mobile, border matches green theme */
+    #tle-injector-card {
+        border-bottom-color: rgba(0, 255, 120, 0.15) !important;
+        padding-bottom: 24px;
+    }
+
+    #right-hud {
+        max-height: none; /* let it expand fully instead of capping */
+        display: block;
+    }
+
+    /* Typography scale-down */
+    .brand-title    { font-size: 1.15rem; }
+    #countdown      { font-size: 1.75rem; }
+    .panel-heading  { font-size: 0.9rem; }
+    .panel-subtitle { font-size: 0.7rem; }
+    .metric-label   { font-size: 0.7rem; }
+    #pass-details p { font-size: 0.8rem; }
+
+    .pass-table        { font-size: 0.7rem; }
+    .pass-table th,
+    .pass-table td     { padding: 8px 4px; }
+
+    #satellite-select  { font-size: 0.8rem; padding: 10px; }
+    #raw-tle-input     { font-size: 10px; }
+    .hud-btn           { font-size: 10px; padding: 10px 8px; }
+}
+
 
 .brand-title {
     margin: 0;
@@ -75,65 +162,94 @@ body, html {
     color: #06b6d4;
     letter-spacing: 1px;
     font-weight: bold;
+    text-transform: uppercase;
 }
+
 
 #countdown {
     font-size: 2.4rem;
     font-weight: bold;
-    color: #22d3ee; /* Electric Neon Cyan */
+    color: #22d3ee;
     text-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
     margin-top: 5px;
+    letter-spacing: 1px;
 }
 
-#pass-details p {
-    margin: 8px 0;
-    font-size: 0.85rem;
-    color: #cbd5e1;
+
+#pass-details p        { margin: 8px 0; font-size: 0.85rem; color: #cbd5e1; }
+#pass-details strong   { color: #94a3b8; }
+
+.no-passes {
+    color: #64748b;
+    font-size: 0.82rem;
+    font-style: italic;
 }
 
-#pass-details strong {
-    color: #94a3b8;
-}
 
-/* RIGHT SIDE HUD (Table Display) */
-#right-hud {
-    top: 25px;
-    right: 25px;
-    width: 440px;
-    bottom: 125px; /* Fits elegantly right above selector box */
+.live-pulse-container {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ff3b30;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
 }
+
+/* Pulsing red dot for live pass */
+.pulse-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ff3b30;
+    box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.6);
+    animation: pulse-ring 1.4s ease-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0 rgba(255,59,48,0.6); }
+    70%  { box-shadow: 0 0 0 10px rgba(255,59,48,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,59,48,0); }
+}
+
+.live-telemetry {
+    font-size: 1rem;
+    font-family: monospace;
+    color: #e2e8f0;
+    letter-spacing: 0.5px;
+}
+
+.telem-green { color: #4CD964; }
+.telem-blue  { color: #5AC8FA; }
+
 
 .panel-heading {
-    margin-top: 0;
-    margin-bottom: 15px;
+    margin: 0 0 15px 0;
     font-size: 1rem;
     letter-spacing: 1.5px;
     color: #22d3ee;
     border-bottom: 1px solid rgba(34, 211, 238, 0.2);
     padding-bottom: 8px;
+    text-transform: uppercase;
 }
+
 
 .table-scroll-wrapper {
     flex-grow: 1;
     overflow-y: auto;
-    padding-right: 5px;
+    padding-right: 4px;
 }
 
-/* Scrollbar customizations */
-.table-scroll-wrapper::-webkit-scrollbar {
-    width: 4px;
-}
-.table-scroll-wrapper::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-}
+.table-scroll-wrapper::-webkit-scrollbar       { width: 3px; }
+.table-scroll-wrapper::-webkit-scrollbar-track { background: transparent; }
 .table-scroll-wrapper::-webkit-scrollbar-thumb {
     background: rgba(6, 182, 212, 0.3);
     border-radius: 2px;
 }
 
-/* 📊 DATA TABLE DESIGN */
 .pass-table {
     width: 100%;
     border-collapse: collapse;
@@ -145,18 +261,20 @@ body, html {
     color: #94a3b8;
     padding: 10px 6px;
     font-weight: 600;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    white-space: nowrap;
 }
 
 .pass-table td {
-    padding: 12px 6px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 11px 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
     color: #e2e8f0;
+    white-space: nowrap;
 }
 
 .pass-table tr:hover td {
-    background: rgba(6, 182, 212, 0.05);
-    color: #ffffff;
+    background: rgba(6, 182, 212, 0.06);
+    color: #fff;
 }
 
 .accent-text {
@@ -164,28 +282,29 @@ body, html {
     font-weight: bold;
 }
 
-/* Badges for visibility indices */
+
 .badge {
-    padding: 2px 6px;
+    display: inline-block;
+    padding: 3px 7px;
     border-radius: 4px;
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: bold;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
 }
+
 .good-vis {
     background: rgba(16, 185, 129, 0.15);
     color: #34d399;
-}
-.poor-vis {
-    background: rgba(148, 163, 184, 0.15);
-    color: #cbd5e1;
+    border: 1px solid rgba(16, 185, 129, 0.25);
 }
 
-/* BOTTOM RIGHT HUD (Asset Selector Dropdown Container) */
-#bottom-right-hud {
-    bottom: 25px;
-    right: 25px;
-    width: 440px;
+.poor-vis {
+    background: rgba(148, 163, 184, 0.1);
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.2);
 }
+
 
 .select-label {
     display: block;
@@ -193,6 +312,7 @@ body, html {
     font-size: 0.75rem;
     color: #94a3b8;
     letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 #satellite-select {
@@ -206,10 +326,18 @@ body, html {
     font-size: 0.85rem;
     outline: none;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+    /* Custom dropdown arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2322d3ee'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
 }
 
-#satellite-select:focus, #satellite-select:hover {
+#satellite-select:focus,
+#satellite-select:hover {
     border-color: #22d3ee;
     box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
 }
@@ -219,7 +347,6 @@ body, html {
     color: #94a3b8;
     font-style: normal;
     font-weight: bold;
-    margin-top: 10px;
 }
 
 #satellite-select option {
@@ -227,3 +354,76 @@ body, html {
     color: #e2e8f0;
     padding: 6px;
 }
+
+
+#tle-injector-card h3 {
+    margin: 0 0 5px 0;
+    color: #00ff78;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.hud-subtitle {
+    margin: 0 0 12px 0;
+    font-size: 10px;
+    color: #8892b0;
+}
+
+#raw-tle-input {
+    width: 100%;
+    background: rgba(5, 5, 10, 0.9);
+    border: 1px solid rgba(0, 255, 120, 0.3);
+    border-radius: 4px;
+    color: #00ff78;
+    font-family: monospace;
+    font-size: 11px;
+    padding: 8px;
+    resize: vertical;
+    min-height: 72px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#raw-tle-input:focus {
+    outline: none;
+    border-color: #00ff78;
+    box-shadow: 0 0 8px rgba(0, 255, 120, 0.3);
+}
+
+.hud-btn {
+    width: 100%;
+    margin-top: 10px;
+    background: rgba(0, 255, 120, 0.08);
+    border: 1px solid #00ff78;
+    color: #00ff78;
+    padding: 10px 8px;
+    font-size: 11px;
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-radius: 3px;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.hud-btn:hover {
+    background: rgba(0, 255, 120, 0.2);
+    box-shadow: 0 0 12px rgba(0, 255, 120, 0.25);
+}
+
+.hud-btn:active {
+    background: rgba(0, 255, 120, 0.3);
+}
+
+
+.status-text {
+    font-size: 10px;
+    margin-top: 8px;
+    text-align: center;
+    min-height: 14px;
+    letter-spacing: 0.5px;
+}
+
+.status-text.success { color: #00ff78; }
+.status-text.error   { color: #ff4a4a; }
