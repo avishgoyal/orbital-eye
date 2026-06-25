@@ -12,8 +12,16 @@ Orbital Eye is a web-based real-time almost fully accurate Satellite Tracker whi
 
 ## Why I built it?
 
-When I was thinking about projects to build, I got the idea of building Orbital Eye due to the struggles I face when I try to click pictures of Space stations or satellites. Coincidentally, that is the same time when I came across Hack Club and Stardance! Normally, clicking a picture of any space station requires you to check whether the sun is at the right angle, the weather to see if clouds are blocking the way or not, the altitude angle at which the satellite is flowing by and the AQI/Light Pollution of the Area you are clicking a photograph in, which causes you to open multiple tabs on the browser. (Tools already do exist for this but one called Astroviewer doesn't have a great UI and the ones who do eat up your ram and GPU like its a buffet). Orbital Eye aims to consolidate all those tools to a simple UI and one who doesn't blow up your PC!
+When I was thinking about projects to build, I got the idea of building Orbital Eye due to the struggles I face when I try to click pictures of Space stations or satellites.
+Coincidentally, that is the same time when I came across Hack Club and Stardance! Normally, clicking a picture of any space station requires you to check whether the sun is at the right angle, the weather to see if clouds are blocking the way or not, the altitude angle at which the satellite is flowing by and the AQI/Light Pollution of the Area you are clicking a photograph in, which causes you to open multiple tabs on the browser. (Tools already do exist for this but one called Astroviewer doesn't have a great UI and the ones who do eat up your ram and GPU like its a buffet). Orbital Eye aims to consolidate all those tools to a simple UI and one who doesn't blow up your PC!
+
 ---
+
+## A Photo I took using Orbital-Eye
+
+Didn't think I would upload this photo since it was so bad, but since I clicked it using orbital-eye, I might as well. The Huge Shining star in the Top-right is the Chinese Space Station, I mean it should be according to orbital-eye...
+![](/screenshots/trash_css_photo.jpg)
+I took this photo in Himachal Pradesh, India. This was like day 1 of the project, when it used to only output passes in the terminal lol. (I used other tools alongside orbital-eye)
 
 ## Features
 
@@ -88,9 +96,7 @@ Front-End:
 ## Challenges
 
 The hardest part of the project was getting the satellite visualization and orbit path rendering to line up correctly. Small differences in altitude scaling caused the orbit path and satellite marker to appear on different planes especially in 1080p Monitors and mobile phones(where it still doesn't work - working on it). 
-
 Another challenge was handling situations where satellite data could not be downloaded. To make the application more reliable, I implemented local caching so previously downloaded orbital data can still be used.
-
 (p.s One of the MOST DIFFICULT challenges I faced were none other than *drum roll please!!!*. typos!)
 ---
 
@@ -99,7 +105,7 @@ Another challenge was handling situations where satellite data could not be down
 - More satellite categories
 - Historical pass logging
 - Better notification system (Using E-mail or some other service)
-- Satellite photography planning tools (Ex- Ideal camera settings for this pass)
+- Satellite photography planning tools (Ex- Ideal camera settings for this pass, things like exposure, shutter speed, etc.)
 - Mobile-friendly controls (Definitely needed lol)
 
 ---
@@ -134,6 +140,7 @@ http://127.0.0.1:5000
 * Three.js and Globe.gl for globe visualisation
 * icons.getbootstrap.com for providing SVGs for the buttons
 * StackOverflow for some code snippets and doubt help (mainly for the satellite sphere visualisation)
+* Stardance and Hack Club for providing me such a great platform!!!!
 
 ---
 
@@ -142,5 +149,6 @@ http://127.0.0.1:5000
 MIT License
 
 ---
+
 Built by **Avish Goyal** 
 
