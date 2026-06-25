@@ -543,6 +543,6 @@ btn.addEventListener('click', () => {
     if (notificationTimeout) {
         clearTimeout(notificationTimeout);
     }
-    notificationTimeout = setTimeout(() => notifyUser(), 12000) // 120 seconds
+    notificationTimeout = setTimeout(() => notifyUser(),diff - 120000) // 120 seconds
     notificationBtnText.textContent = notificationsEnabled ? 'DONT NOTIFY ME' : 'NOTIFY ME';
 });
