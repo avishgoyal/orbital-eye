@@ -98,6 +98,7 @@ Front-End:
 The hardest part of the project was getting the satellite visualization and orbit path rendering to line up correctly. Small differences in altitude scaling caused the orbit path and satellite marker to appear on different planes especially in 1080p Monitors and mobile phones(where it still doesn't work - working on it). 
 Another challenge was handling situations where satellite data could not be downloaded. To make the application more reliable, I implemented local caching so previously downloaded orbital data can still be used.
 (p.s One of the MOST DIFFICULT challenges I faced were none other than *drum roll please!!!*. typos!)
+
 ---
 
 ## Future Improvements
