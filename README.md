@@ -6,250 +6,110 @@ Orbital Eye is a web-based real-time almost fully accurate Satellite Tracker whi
 
 ## Preview
 
-![Dashboard](./screenshots/image.png)
+
 
 ---
 
-## Inspiration
+## Why I built it?
 
-Orbital Eye started as a small Python script that told me when the International Space Station would pass overhead so I could try photographing it.
-
-As someone interested in astronomy and astrophotography, I quickly realized that capturing satellites isn't just about owning a camera. You need to know when the satellite will appear, where it will rise, whether it will still be illuminated by sunlight, and whether the weather will allow you to see it at all.
-
-What began as a simple ISS pass predictor slowly evolved into a complete satellite tracking platform. Along the way, I learned about orbital mechanics, coordinate systems, astronomical calculations, weather forecasting, and 3D visualization.
-
-Today, Orbital Eye combines all of those pieces into a single application.
-
+When I was thinking about projects to build, I got the idea of building Orbital Eye due to the struggles I face when I try to click pictures of Space stations or satellites. Coincidentally, that is the same time when I came across Hack Club and Stardance! Normally, clicking a picture of any space station requires you to check whether the sun is at the right angle, the weather to see if clouds are blocking the way or not, the altitude angle at which the satellite is flowing by and the AQI/Light Pollution of the Area you are clicking a photograph in, which causes you to open multiple tabs on the browser. (Tools already do exist for this but one called Astroviewer doesn't have a great UI and the ones who do eat up your ram and GPU like its a buffet). Orbital Eye aims to consolidate all those tools to a simple UI and one who doesn't blow up your PC!
 ---
 
 ## Features
 
-### 🛰️ Satellite Pass Prediction
-
-Calculate upcoming passes for your exact location using real TLE orbital data.
-
-For every pass, Orbital Eye provides:
-
-* Rise time
-* Peak time
-* Set time
-* Maximum elevation
-* Direction of travel
-* Local timezone conversion
-
----
-
-### 🌤️ Visibility Forecasting
-
-A satellite passing overhead does not necessarily mean it will be visible.
-
-Orbital Eye combines:
-
-* Cloud cover forecasts
-* Satellite illumination status
-* Solar position
-* Elevation angle
-
-to estimate real-world viewing conditions.
-
-Passes are automatically rated:
-
-* EXCELLENT
-* GOOD
-* FAIR
-* POOR
-* INVISIBLE
-
----
-
-### 📡 Live Telemetry
-
-During active passes, Orbital Eye continuously updates:
-
-* Altitude angle
-* Azimuth angle
-* Cardinal direction
-* Visibility status
-
-allowing observers to track satellites in real time.
-
----
-
-### 🌍 Interactive 3D Globe
-
-Visualize satellites directly on a rotatable 3D Earth.
-
-Features include:
-
-* Live satellite position tracking
-* Future orbit path rendering
-* Observer location display
-* Smooth orbit animation
-* Ground station field-of-view visualization
-
----
-
-### 🎯 Ground Station Field of View
-
-Orbital Eye projects the observer's approximate visible horizon directly onto the globe.
-
-The field-of-view ring represents the region where satellites can realistically be observed from the selected location, making it much easier to understand when an orbit enters or exits viewing range.
-
----
-
-### 🚀 Custom TLE Injection
-
-Not seeing the satellite you want?
-
-Paste any valid TLE directly into Orbital Eye and instantly:
-
-* Generate orbit predictions
-* Calculate upcoming passes
-* Render orbit paths
-* Begin live tracking
-
-No page refresh required.
-
----
-
-### 🛰️ Multiple Spacecraft Support
-
-Track a wide variety of objects including:
-
-* International Space Station (ISS)
-* Tiangong Space Station
-* Crew Dragon spacecraft
-* Soyuz spacecraft
-* Cargo vehicles
-* Cubesats
-* Experimental satellites
-* Orbital debris
-
-Any object available through the loaded TLE dataset can be tracked.
-
----
+- Real-time satellite tracking
+- Visibility levels prediction using weather, sunlight, and cloud cover
+- Interactive 3D globe with the help of Globe.gl
+- Live altitude and azimuth telemetry during a Pass
+- Automatic location and timezone detection
+- Support for the ISS, CSS, spacecraft, cubesats, and other orbital objects
+- Camera lock mode
+- Pass notification reminder
+- Hide/Show UI mode
+- Local satellite data caching for reliability
 
 ## How It Works
 
-### 1. Orbital Data Acquisition
+Orbital Eye uses Skyfield to calculate satellite positions from TLE (Two-Line Element) data fetched from Celestrak.
 
-Orbital Eye downloads Two-Line Element (TLE) data from CelesTrak and converts those elements into mathematical satellite models using Skyfield.
+The backend:
+- Downloads and caches orbital data (To parse faster for switches)
+- Calculates future satellite passes using Skyfield API
+- Predicts visibility conditions using OpenMeteo API for weather and Sunlight angle using Ephemeris
+- Provides live telemetry during a Pass
+- Provides Orbit path to map out orbit at the globe
 
-### 2. Pass Computation
+The frontend:
+- Gets the user's location through the browser
+- Renders Earth, Orbit and Satellite using Globe.gl
+- Animates satellites along calculated orbit paths
+- Displays upcoming pass information and live tracking data
+---
 
-The application calculates rise, peak, and set events for the observer's location over the next 48 hours.
+## Technologies Used
 
-### 3. Visibility Analysis
+Backend:
+- Python
+- Flask
+- Skyfield
+- Celestrak TLE Data
+- Open-Meteo API
+- JPL DE421 Ephemeris
 
-Each pass is evaluated using:
 
-* Weather forecasts
-* Solar geometry
-* Satellite illumination
-* Elevation thresholds
-
-to determine whether the object is likely to be visible.
-
-### 4. Orbit Propagation
-
-Future satellite positions are propagated in advance and converted into geographic coordinates.
-
-These coordinates are used to render orbit paths and animate satellites on the 3D globe.
-
-### 5. Live Tracking
-
-During active passes, Orbital Eye continuously calculates the satellite's position relative to the observer and streams telemetry updates to the frontend.
+Front-End:
+- HTML
+- CSS
+- JavaScript
+- Globe.gl
+- Three.js
 
 ---
 
-## Technical Highlights
-
-### Offline TLE Caching
-
-Satellite tracking depends on external orbital datasets.
-
-To prevent outages from breaking the application, Orbital Eye automatically caches downloaded TLE files locally and falls back to cached data whenever necessary.
-
-### Visibility Classification Engine
-
-Rather than simply displaying pass times, Orbital Eye attempts to answer a more useful question:
-
-> Will I actually be able to see it?
-
-This required combining weather forecasts, orbital calculations, solar geometry, and observer position into a single visibility model.
-
-### Efficient Orbit Animation
-
-Instead of requesting satellite positions continuously, Orbital Eye precomputes future orbital coordinates and sends them to the browser.
-
-The frontend interpolates between those positions locally, significantly reducing server load while maintaining smooth animation.
-
----
-
-## Tech Stack
-
-### Backend
-
-* Python
-* Flask
-* Skyfield
-* Requests
-
-### Frontend
-
-* HTML
-* CSS
-* JavaScript
-
-### Visualization
-
-* Globe.gl
-* Three.js
-
-### Data Sources
-
-* CelesTrak TLE Data
-* Open-Meteo Weather API
-* JPL DE421 Ephemeris
-
----
-
-## Project Structure
+## Repository Structure
 
 ```text
-orbital-eye/
-│
+/orbital-eye
 ├── app.py
 ├── predictor.py
-├── requirements.txt
-│
 ├── templates/
 │   └── index.html
-│
 ├── static/
+│   ├── style.css
 │   ├── script.js
-│   └── style.css
-│
+│   └── earth_texture.jpg
 ├── screenshots/
-│   └── dashboard.png
-│
-└── stations.txt
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-## Running Locally
+## Challenges
 
+The hardest part of the project was getting the satellite visualization and orbit path rendering to line up correctly. Small differences in altitude scaling caused the orbit path and satellite marker to appear on different planes especially in 1080p Monitors and mobile phones(where it still doesn't work - working on it). 
+
+Another challenge was handling situations where satellite data could not be downloaded. To make the application more reliable, I implemented local caching so previously downloaded orbital data can still be used.
+
+(p.s One of the MOST DIFFICULT challenges I faced were none other than *drum roll please!!!*. typos!)
+---
+
+## Future Improvements
+
+- More satellite categories
+- Historical pass logging
+- Better notification system (Using E-mail or some other service)
+- Satellite photography planning tools (Ex- Ideal camera settings for this pass)
+- Mobile-friendly controls (Definitely needed lol)
+
+---
+
+## Running Locally
 Clone the repository:
 
 ```bash
 git clone https://github.com/avishgoyal/orbital-eye.git
 cd orbital-eye
-```
-
-Install dependencies:
-
-```bash
 pip install -r requirements.txt
 ```
 
@@ -266,55 +126,14 @@ http://127.0.0.1:5000
 ```
 
 ---
-
-## Challenges
-
-Some of the most difficult parts of the project included:
-
-* Handling unreliable external orbital datasets
-* Building a fallback caching system
-* Determining actual visibility instead of just pass times
-* Combining weather forecasts with astronomical calculations
-* Creating smooth orbit animations on a 3D globe
-* Correctly handling orbital wrap-around at the International Date Line
-
----
-
-## What I Learned
-
-Through this project I learned about:
-
-* Orbital mechanics
-* Satellite tracking
-* Geospatial mathematics
-* Coordinate transformations
-* Astronomical visibility prediction
-* API integration
-* Flask development
-* Interactive 3D visualization
-
-Most importantly, I learned how much engineering and mathematics goes into the tools we often take for granted.
-
----
-
-## Future Improvements
-
-* Satellite search by NORAD ID
-* Brightness prediction
-* Pass notifications
-* Mobile optimization
-* Historical orbit playback
-* Augmented reality sky guidance
-* Additional orbital datasets
-
----
-
 ## Credits
 
-* Orbital data provided by CelesTrak
-* Weather forecasts provided by Open-Meteo
-* Orbital calculations powered by Skyfield
-* 3D visualization powered by Globe.gl and Three.js
+* Celestrak for orbital data
+* Open-Meteo for weather data
+* SkyField API for doing the actual calculations
+* Three.js and Globe.gl for globe visualisation
+* icons.getbootstrap.com for providing SVGs for the buttons
+* StackOverflow for some code snippets and doubt help (mainly for the satellite sphere visualisation)
 
 ---
 
@@ -323,7 +142,5 @@ Most importantly, I learned how much engineering and mathematics goes into the t
 MIT License
 
 ---
+Built by **Avish Goyal** 
 
-Built by **Avish Goyal** 🚀
-
-*Because staring at moving dots in space is cooler than it sounds.*
