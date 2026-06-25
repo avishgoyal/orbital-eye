@@ -162,7 +162,7 @@ function drawOverlay(nodes) {
         const screen = projectToScreen(node.lat, node.lng, node.alt);
         if (!screen) return;
 
-        const radius = node.isSatellite ? 8 : 5;
+        const radius = node.isSatellite ? 5 : 4;
         const color  = node.isSatellite ? '#f43f5e' : '#4CD964';
 
         // Glow ring
@@ -352,7 +352,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (globeElement) {
         myGlobe = Globe()(globeElement)
-            .globeImageUrl('https://raw.githubusercontent.com/turban/webgl-earth/master/images/2_no_clouds_4k.jpg')
+            .globeImageUrl('//cdn.jsdelivr.net/npm/three-globe/example/img/earth-blue-marble.jpg')
+            .backgroundImageUrl('//cdn.jsdelivr.net/npm/three-globe/example/img/night-sky.png')
             .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
             .showAtmosphere(true)
             .atmosphereColor('#06b6d4')
@@ -364,7 +365,7 @@ document.addEventListener("DOMContentLoaded", () => {
         myGlobe.pathPointLng(p => p.lng !== undefined ? p.lng : p.lon);
         myGlobe.pathPointAlt(p => Math.max(p.alt, 0.05));
         myGlobe.pathColor(() => '#06b6d4');
-        myGlobe.pathStroke(1.8);
+        myGlobe.pathStroke(1);
 
         // Resize observer — resets canvas size cache when container changes
         const canvas = document.getElementById('overlay-canvas');
@@ -476,4 +477,20 @@ document.addEventListener("DOMContentLoaded", () => {
             statusDiv.innerText = 'INJECTION FAILED. CHECK CONSOLE.';
         }
     });
+});
+
+// Hide UI button logic
+btn = document.getElementById('hide-ui-btn')
+const btnText = document.getElementById('hide-ui-text');
+let hidden = false;
+
+btn.addEventListener('click', () => {
+    hidden = !hidden;
+
+    document.getElementById('left-hud').classList.toggle('hidden-ui');
+    document.getElementById('right-hud').classList.toggle('hidden-ui');
+    document.getElementById('bottom-right-hud').classList.toggle('hidden-ui');
+    document.getElementById('tle-injector-card').classList.toggle('hidden-ui');
+
+    btnText.textContent = hidden ? 'SHOW UI' : 'HIDE UI';
 });
