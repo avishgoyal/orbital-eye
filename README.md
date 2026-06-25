@@ -1,14 +1,12 @@
-# 🛰️ Orbital Eye
+# Orbital Eye
 
-A real-time satellite tracking platform that predicts overhead passes, evaluates viewing conditions, visualizes orbital motion on an interactive 3D globe, and lets users track virtually any spacecraft using live orbital data.
-
-Built because I wanted to know exactly when to point my camera at the sky.
+Orbital Eye is a web-based real-time almost fully accurate Satellite Tracker which features international stations and satellites and displays them on an orbit on top of a 3d rendered WebGL Globe. This program is mainly catered towards astrophotographers like myself!
 
 ---
 
 ## Preview
 
-![Dashboard](./screenshots/dashboard-updated.png)
+![Dashboard](./screenshots/image.png)
 
 ---
 

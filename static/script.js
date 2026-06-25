@@ -186,7 +186,7 @@ async function fetchActiveOrbitPath() {
     if (!selectBox || !myGlobe) return;
 
     const activeSatName = selectBox.value;
-    console.log(`📡 Fetching orbit path for: ${activeSatName}`);
+    console.log(`Fetching orbit path for: ${activeSatName}`);
 
     try {
         const response = await fetch(`/api/orbit/${encodeURIComponent(activeSatName)}`);
@@ -196,7 +196,7 @@ async function fetchActiveOrbitPath() {
 
         if (Array.isArray(orbitPoints) && orbitPoints.length > 0) {
             myGlobe.pathsData([{ coords: orbitPoints }]);
-            console.log(`✅ Mapped ${orbitPoints.length} orbit coordinates.`);
+            console.log(`Mapped ${orbitPoints.length} orbit coordinates.`);
             currentPathIndex  = 0;
             animationProgress = 0.0;
         } else {
@@ -231,12 +231,27 @@ function animateSatelliteNode() {
             const sAlt = startPoint.alt || 0.06;
             const eAlt = endPoint.alt   || 0.06;
 
+            const interpolatedLat = sLat + (eLat - sLat) * animationProgress;
+            const interpolatedLng = sLng + (eLng - sLng) * animationProgress;
+            const interpolatedAlt = sAlt + (eAlt - sAlt) * animationProgress;
             activeTrackingNodes.push({
-                lat:         sLat + (eLat - sLat) * animationProgress,
-                lng:         sLng + (eLng - sLng) * animationProgress,
-                alt:         sAlt + (eAlt - sAlt) * animationProgress,
+                lat: interpolatedLat,
+                lng: interpolatedLng,
+                alt: interpolatedAlt,
                 isSatellite: true
             });
+
+            // camera lock logic
+            if (cameraLocked) {
+                myGlobe.pointOfView(
+                    {
+                        lat: interpolatedLat,
+                        lng: interpolatedLng,
+                        altitude: 0.6
+                    },
+                    100 // it helps to smoothen transition so it doesnt feel so jittery
+                );
+            }
 
             animationProgress += animationSpeed;
 
@@ -352,7 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (globeElement) {
         myGlobe = Globe()(globeElement)
-            .globeImageUrl('//cdn.jsdelivr.net/npm/three-globe/example/img/earth-blue-marble.jpg')
+            .globeImageUrl('/static/earth_texture.jpg')
             .backgroundImageUrl('//cdn.jsdelivr.net/npm/three-globe/example/img/night-sky.png')
             .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
             .showAtmosphere(true)
@@ -363,7 +378,7 @@ document.addEventListener("DOMContentLoaded", () => {
         myGlobe.pathPoints(d => d.coords);
         myGlobe.pathPointLat(p => p.lat);
         myGlobe.pathPointLng(p => p.lng !== undefined ? p.lng : p.lon);
-        myGlobe.pathPointAlt(p => Math.max(p.alt, 0.05));
+        myGlobe.pathPointAlt(p => Math.max(p.alt, 0.064));
         myGlobe.pathColor(() => '#06b6d4');
         myGlobe.pathStroke(1);
 
@@ -481,7 +496,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Hide UI button logic
 btn = document.getElementById('hide-ui-btn')
-const btnText = document.getElementById('hide-ui-text');
+const uiBtnText = document.getElementById('hide-ui-text');
 let hidden = false;
 
 btn.addEventListener('click', () => {
@@ -492,5 +507,42 @@ btn.addEventListener('click', () => {
     document.getElementById('bottom-right-hud').classList.toggle('hidden-ui');
     document.getElementById('tle-injector-card').classList.toggle('hidden-ui');
 
-    btnText.textContent = hidden ? 'SHOW UI' : 'HIDE UI';
+    uiBtnText.textContent = hidden ? 'SHOW UI' : 'HIDE UI';
+});
+
+btn = document.getElementById('camera-lock-button')
+const cameraBtnText = document.getElementById('camera-lock-text');
+let cameraLocked = false;
+
+btn.addEventListener('click', () => {
+    cameraLocked = !cameraLocked
+
+    // prevents people to be able to move the globe
+    if (cameraLocked) {
+    myGlobe.controls().autoRotate = false;
+    }
+    // rest of the logic is in animate satellite node function
+    cameraBtnText.textContent = cameraLocked ? 'UNLOCK CAMERA' : 'LOCK CAMERA';
+});
+
+btn = document.getElementById('notifications-button')
+const notificationBtnText = document.getElementById('notifications-text');
+let notificationsEnabled = false;
+let notificationTimeout = null;
+function notifyUser() {
+    alert('PASS IN 2 MINUTES!!!!!')
+    notificationsEnabled = false
+    notificationBtnText.textContent = 'NOTIFY ME';
+}
+
+btn.addEventListener('click', () => {
+    notificationsEnabled = !notificationsEnabled
+    const el = document.getElementById('countdown');
+    const targetAttr = el.getAttribute('date-time');
+    const diff = parseInt(targetAttr, 10) - Date.now();
+    if (notificationTimeout) {
+        clearTimeout(notificationTimeout);
+    }
+    notificationTimeout = setTimeout(() => notifyUser(), 12000) // 120 seconds
+    notificationBtnText.textContent = notificationsEnabled ? 'DONT NOTIFY ME' : 'NOTIFY ME';
 });
