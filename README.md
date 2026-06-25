@@ -8,14 +8,10 @@ Orbital Eye is a web-based real-time almost fully accurate Satellite Tracker whi
 
 
 
----
-
 ## Why I built it?
 
 When I was thinking about projects to build, I got the idea of building Orbital Eye due to the struggles I face when I try to click pictures of Space stations or satellites.
 Coincidentally, that is the same time when I came across Hack Club and Stardance! Normally, clicking a picture of any space station requires you to check whether the sun is at the right angle, the weather to see if clouds are blocking the way or not, the altitude angle at which the satellite is flowing by and the AQI/Light Pollution of the Area you are clicking a photograph in, which causes you to open multiple tabs on the browser. (Tools already do exist for this but one called Astroviewer doesn't have a great UI and the ones who do eat up your ram and GPU like its a buffet). Orbital Eye aims to consolidate all those tools to a simple UI and one who doesn't blow up your PC!
-
----
 
 ## A Photo I took using Orbital-Eye
 
@@ -52,7 +48,6 @@ The frontend:
 - Renders Earth, Orbit and Satellite using Globe.gl
 - Animates satellites along calculated orbit paths
 - Displays upcoming pass information and live tracking data
----
 
 ## Technologies Used
 
@@ -71,8 +66,6 @@ Front-End:
 - JavaScript
 - Globe.gl
 - Three.js
-
----
 
 ## Repository Structure
 
@@ -98,8 +91,6 @@ Front-End:
 The hardest part of the project was getting the satellite visualization and orbit path rendering to line up correctly. Small differences in altitude scaling caused the orbit path and satellite marker to appear on different planes especially in 1080p Monitors and mobile phones(where it still doesn't work - working on it). 
 Another challenge was handling situations where satellite data could not be downloaded. To make the application more reliable, I implemented local caching so previously downloaded orbital data can still be used.
 (p.s One of the MOST DIFFICULT challenges I faced were none other than *drum roll please!!!*. typos!)
-
----
 
 ## Future Improvements
 
@@ -143,13 +134,9 @@ http://127.0.0.1:5000
 * StackOverflow for some code snippets and doubt help (mainly for the satellite sphere visualisation)
 * Stardance and Hack Club for providing me such a great platform!!!!
 
----
-
 ## License
 
 MIT License
-
----
 
 Built by **Avish Goyal** 
 
